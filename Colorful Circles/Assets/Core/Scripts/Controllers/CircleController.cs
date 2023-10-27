@@ -10,7 +10,7 @@ public class CircleController : MonoBehaviour
     public GameObject belongsToStand;
     [SerializeField] private GameObject _belongsToSocet;
     public bool canMove;
-    [SerializeField] private string _color;
+    public string color;
 
 
     private GameObject _movePosition;
@@ -33,9 +33,8 @@ public class CircleController : MonoBehaviour
                 _movePosition = targetObj;
                 _changePos = true;
                 break;
-            case "EnterSocket":
-                break;
             case "TurnSocket":
+                _turnSocket = true;
                 break;
         }
     }
@@ -75,6 +74,16 @@ public class CircleController : MonoBehaviour
                 {
                     belongsToStand.GetComponent<StandController>().circles[^2].GetComponent<CircleController>().canMove = false;
                 }
+                _gameManager.isMove = false;
+            }
+        }
+        if (_turnSocket)
+        {
+            transform.position = Vector3.Lerp(transform.position, _belongsToSocet.transform.position, .3f);
+            if (Vector3.Distance(transform.position, _belongsToSocet.transform.position) < .1f)
+            {
+                transform.position = _belongsToSocet.transform.position;
+                _turnSocket = false;
                 _gameManager.isMove = false;
             }
         }

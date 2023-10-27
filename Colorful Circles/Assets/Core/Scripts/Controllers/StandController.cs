@@ -13,6 +13,7 @@ public class StandController : MonoBehaviour
     public int emptySocketNumber;
     public List<GameObject> circles = new();
 
+    private int completedCircle;
     public GameObject GetCircle()
     {
         return circles[^1]; // Cemberlerin en sonuncu elamýna eris = _circles.Count -1 
@@ -21,7 +22,6 @@ public class StandController : MonoBehaviour
     {
         return _sockets[emptySocketNumber]; 
     }
-
     public void ChangeSocket(GameObject objToBeDeleted)
     {
         circles.Remove(objToBeDeleted);
@@ -36,5 +36,33 @@ public class StandController : MonoBehaviour
             emptySocketNumber = 0;
         }
     }
-
+    public void CheckCircles()
+    {
+        if (circles.Count == 4)
+        {
+            string color = circles[0].GetComponent<CircleController>().color;
+            foreach (GameObject circle in circles) 
+            {
+                if (color == circle.GetComponent<CircleController>().color) completedCircle++;  
+                               
+            }
+            if (completedCircle == 4)
+            {
+                _gameManager.CompletedStand();
+                CompletedStandProcess();
+                Debug.Log("Completed!");
+            }            
+        }
+    }
+    private void CompletedStandProcess()
+    {
+        foreach (var circle in circles)
+        {
+            circle.GetComponent<CircleController>().canMove = false;
+            Color32 color = circle.GetComponent<MeshRenderer>().material.GetColor("_Color");
+            color.a = 150;
+            circle.GetComponent<MeshRenderer>().material.SetColor("_Color",color);
+            gameObject.tag = "CompletedStand";
+        }
+    }
 }
