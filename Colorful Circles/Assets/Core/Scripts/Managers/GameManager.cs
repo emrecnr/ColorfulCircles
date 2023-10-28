@@ -1,18 +1,30 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("References")]
+    [SerializeField] private GameObject _wonPanel;
+    [SerializeField] private GameObject _retryButn;
+
+
+    [Header("Audios")]
+    [SerializeField] private AudioSource _circleSound;
+    [SerializeField] private AudioSource _wonSound;
+
+
     private GameObject _selectedObj;
     private GameObject _selectedStand;
+
     private CircleController _circleController;
 
     public bool isMove;
-    public int numberOfTargetStand;
-    [SerializeField] private int _numberOfStandCompleted;
-
+    [SerializeField] private int numberOfTargetStand;
+    private int _numberOfStandCompleted;
 
 
     private void Update()
@@ -33,13 +45,13 @@ public class GameManager : MonoBehaviour
                             if (_circleController.color == stand.circles[^1].GetComponent<CircleController>().color)
                             {
                                 SetCircle(stand, hit.collider);
-                               
+
                             }
                             else
                             {
                                 TurnSocket();
                             }
-                            
+
                         }
                         else if (stand.circles.Count == 0)
                         {
@@ -70,6 +82,7 @@ public class GameManager : MonoBehaviour
     }
     private void GetCircle(StandController stand)
     {
+        _circleSound.Play();
         _selectedObj = stand.GetCircle();
         _circleController = _selectedObj.GetComponent<CircleController>();
         isMove = true;
@@ -80,8 +93,9 @@ public class GameManager : MonoBehaviour
             _selectedStand = _circleController.belongsToStand;
         }
     }
-    private void SetCircle(StandController stand,Collider hit)
+    private void SetCircle(StandController stand, Collider hit)
     {
+        Sound("Circle");
         _selectedStand.GetComponent<StandController>().ChangeSocket(_selectedObj);
 
         _circleController.Move("ChangePosition", hit.gameObject,
@@ -95,6 +109,7 @@ public class GameManager : MonoBehaviour
     }
     private void TurnSocket()
     {
+        Sound("Circle");
         _circleController.Move("TurnSocket");
         _selectedStand = null;
         _selectedObj = null;
@@ -102,11 +117,45 @@ public class GameManager : MonoBehaviour
     public void CompletedStand()
     {
         _numberOfStandCompleted++;
+        Sound("Won");
         if (_numberOfStandCompleted == numberOfTargetStand)
         {
             Debug.Log("WON!!");
-            // TODO: Kazandin Paneli 
+            
+            _retryButn.SetActive(false);
+            _wonPanel.SetActive(true);
         }
     }
+
+    private void Sound(string soundValue)
+    {
+        switch (soundValue)
+        {
+            case "Won":
+                Debug.Log("Calisti");
+                _wonSound.Play();
+                break;
+            case "Circle":
+                _circleSound.Play();
+                break;
+            
+        }
+    }
+
+    // Buttons
+
+    public void Retry()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    public void NextLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
+    public void Quit()
+    {
+
+    }
+
 
 }

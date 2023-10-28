@@ -9,7 +9,6 @@ public class StandController : MonoBehaviour
     [SerializeField] private GameManager _gameManager;
     public GameObject movePosition;
     [SerializeField] private GameObject[] _sockets;
-
     public int emptySocketNumber;
     public List<GameObject> circles = new();
 
@@ -49,20 +48,26 @@ public class StandController : MonoBehaviour
             if (completedCircle == 4)
             {
                 _gameManager.CompletedStand();
+                
                 CompletedStandProcess();
                 Debug.Log("Completed!");
-            }            
+            }
+            else
+            {
+                completedCircle = 0;
+            }
         }
     }
     private void CompletedStandProcess()
     {
         foreach (var circle in circles)
         {
+            //gameObject.tag = "CompletedStand";
             circle.GetComponent<CircleController>().canMove = false;
             Color32 color = circle.GetComponent<MeshRenderer>().material.GetColor("_Color");
             color.a = 150;
             circle.GetComponent<MeshRenderer>().material.SetColor("_Color",color);
-            gameObject.tag = "CompletedStand";
+            
         }
     }
 }

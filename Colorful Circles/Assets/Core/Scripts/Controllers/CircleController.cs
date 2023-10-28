@@ -5,7 +5,7 @@ using UnityEngine;
 public class CircleController : MonoBehaviour
 {
     [SerializeField] private GameManager _gameManager;
-
+    
 
     public GameObject belongsToStand;
     [SerializeField] private GameObject _belongsToSocet;
@@ -88,4 +88,5 @@ public class CircleController : MonoBehaviour
             }
         }
     }
+   
 }
